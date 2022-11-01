@@ -32,7 +32,7 @@ From pip
 
 From github
 ::
-    $ pip install git+https://github.com/liqpay/sdk-python#egg=liqpay
+    $ pip install git+https://github.com/shevchenko126/liqpay-sdk-python#egg=liqpay
 
 Working with LiqPay Callback locally
 ============
