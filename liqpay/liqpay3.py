@@ -1,7 +1,7 @@
 """
 LiqPay Python SDK
 ~~~~~~~~~~~~~~~~~
-supports python 2.7.x version
+supports python 3.7.x version
 requires requests module
 """
 
@@ -12,6 +12,7 @@ import base64
 from copy import deepcopy
 import hashlib
 import json
+import string
 from urllib.parse import urljoin
 
 import requests
@@ -22,16 +23,16 @@ def to_unicode(s):
     :param s:
     :return: unicode value (decoded utf-8)
     """
-    if isinstance(s, unicode):
+    if isinstance(s, bytes):
         return s
 
-    if isinstance(s, basestring):
-        return s.decode('utf-8', 'strict')
+    if isinstance(s, str):
+        return s.encode("windows-1252").decode("utf-8")
 
     if hasattr(s, '__unicode__'):
         return s.__unicode__()
 
-    return unicode(bytes(s), 'utf-8', 'strict')
+    return bytes(s, 'utf-8', 'strict')
 
 
 class ParamValidationError(Exception):
@@ -57,9 +58,10 @@ class LiqPay(object):
         self._host = host
 
     def _make_signature(self, *args):
-        smart_str = lambda x: to_unicode(x).encode('utf-8')
-        joined_fields = ''.join(smart_str(x) for x in args)
-        return base64.b64encode(hashlib.sha1(joined_fields).digest())
+        # smart_str = lambda x: to_unicode(x).encode('utf-8')
+        joined_fields = ''.join(x for x in args)
+        joined_decoded_fields = to_unicode(joined_fields).encode('utf-8')
+        return base64.b64encode(hashlib.sha1(joined_decoded_fields).digest())
 
     def _prepare_params(self, params):
         params = {} if params is None else deepcopy(params)
